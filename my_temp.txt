@@ -1,0 +1,187 @@
+
+// sql dump in index page
+<?php echo $this->element('sql_dump'); ?>
+
+
+
+// implementing jquer_ajax_autocomplete in cakephp
+http://www.willis-owen.co.uk/2012/12/autocomplete-widget-cakephp/
+http://bakery.cakephp.org/articles/matt_1/2011/08/07/yet_another_jquery_autocomplete_helper_2
+http://bakery.cakephp.org/articles/Gemini/2008/04/12/jquery-autocomplete-helper
+
+// autocomplete in cakephp 1.3
+//http://book.cakephp.org/1.3/en/The-Manual/Core-Helpers/AJAX.html
+
+// cakephp tools
+http://www.dereuromark.de/2011/06/06/very-useful-cakephp-code-snippets/
+
+
+
+<html>
+<script type="text/javascript" src="/mycake/js/prototype.js"></script><script type="text/javascript" src="/mycake/js/scriptaculous.js"></script><!-- File: /app/views/posts/index.ctp -->
+<style>
+	div.auto_complete {position:absolute;width:250px;background-color :white;border:1px solid #888;margin:0px;padding:0px;}
+	li.selected { background-color: #ffb; }
+</style>
+
+	<form action="/mycake/widgets" id="postIndexForm" method="post" accept-charset="utf-8">
+		<div style="display:none;">
+			<input type="hidden" name="_method" value="POST" />
+		</div>
+		<input name="data[Post][title]" type="text" id="PostTitle" autocomplete="off" />
+		<div id="PostTitle_autoComplete" class="auto_complete"></div>
+		<script type="text/javascript">
+			//<![CDATA[
+				new Ajax.Autocompleter('PostTitle', 'PostTitle_autoComplete', '/mycake/posts/autoComplete', {});
+			//]]>
+		</script>
+		<div class="submit"><input type="submit" value="View Post" />
+		</div>
+	</form>
+	
+	
+	/////////////////////////////////// Ajax autocomplete using cake inbulit autoComplete(string $fieldId, string $url,  array $options)
+	http://book.cakephp.org/1.3/en/The-Manual/Core-Helpers/AJAX.html
+	
+	// date 17/4/2013
+	##### page: 	post_controller
+	function autoComplete() {
+		//Partial strings will come from the autocomplete field as
+		//$this->data['Post']['subject']
+		$this->set('posts', $this->Post->find('all', array(
+															'conditions' => array('Post.title LIKE' => '%'.$this->data['Post']['title'].'%'),
+															'fields' => array('title')
+		)));
+		$this->layout = 'ajax';
+	}
+	
+	##### page: 	ajax_implementer_ui page		//
+		<style>
+			div.auto_complete { position:absolute;width:250px;background-color :white;border:1px solid #888;margin:0px;padding:0px; }
+			li.selected { background-color: #ffb; }
+		</style>
+	<?php echo $form->create(); ?>
+	<?php echo $ajax->autoComplete('Post.title', '/posts/autoComplete')?>
+	<?php echo $form->end('View Post')?>
+	
+	##### page: ajax_return_page    				// ajax return html
+	<style>
+		div.auto_complete    { position :absolute;width:250px;background-color:white;border:1px solid #888;margin:0px;padding:0px;}
+		li.selected    { background-color: #ffb; }
+	</style>
+	<ul>
+	 <?php foreach($posts as $post): ?>
+		 <li><?php echo $post['Post']['title']; ?></li>
+	 <?php endforeach; ?>
+	</ul>
+	/////////////////////////	/////////////////////////		/////////////////////////		/////////////////////////		/////////////////////////	`/////////////////////////	
+	
+	
+	/////
+		dt:18/4/2013
+		jquery autocomplete
+		
+		syntax: $( "#birds" ).autocomplete({source: "search.php", minLength: 2, select: function( event, ui ) {
+								log( ui.item ? "Selected: " + ui.item.value + " aka " + ui.item.id : "Nothing selected, input was " + this.value );
+							}
+				});
+	/////
+	
+	[{"value":"Mrs. Dash Classic Ranch Dip Mix"}]
+	
+	/*
+		function log( message ) {
+			$( "<div>" ).text( message ).prependTo( "#log" );
+			$( "#log" ).scrollTop( 0 );
+		}
+
+		// PRODUCT AUTO COMPLETE		
+		$( "#search_1" ).autocomplete({
+			source: "/bng/products/product_search_autocomplete",
+			minLength: 1,
+			autoFocus:true,
+			select: function( event, ui ) {			
+				log( ui.item ?
+					"Selected: " + ui.item.value + " aka " + ui.item.id :
+					"Nothing selected, input was " + this.value );
+			}
+		});
+		*/
+		
+	########## how to use jquery autocomplete helper in
+		
+	1#) using page		Add 2 tasks:- Add jquery css and  call the autocomplete helper 
+	<?php echo $this->Html->Css('jquery-ui.css'); ?>
+	<?php echo $this->CustomAutocomplete->custom_autocomplete('search_3', '/bng/products/ingredients_search_autocomplete'); ?>
+		
+	#2) view for custom_autocompete_view 			// this html will be return to view page
+	$array = array();
+	foreach($ingredientss_titles as $title){
+		$array[]['value']= $title['Ingredient']['ingredient_name'];
+	}
+	$product_json_string = json_encode($array);
+	echo $product_json_string;
+	
+	
+	#3) controller function for autocomplete
+	$helpers = array('CustomAutocomplete');
+	function product_search_autocomplete(){
+		$term				= $_GET['term'];		
+		$products_titles	= $this->Product->find('all', array('conditions' => array('Product.title LIKE' => '%'. $term.'%'),'fields' => array('title')));		
+		$this->set('products_titles', $products_titles);
+		$this->layout 		= 'ajax';
+	}
+	
+24/4/2013
+
+	
+
+	
+	
+	
+
+
+
+
+
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+	
+	
+	
